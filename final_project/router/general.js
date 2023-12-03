@@ -3,6 +3,7 @@ let books = require('./booksdb.js');
 let isValid = require('./auth_users.js').isValid;
 let users = require('./auth_users.js').users;
 const public_users = express.Router();
+const booksService = require('./books-service.js');
 
 public_users.post('/register', (req, res) => {
   const { username, password } = req.body;
@@ -22,7 +23,16 @@ public_users.post('/register', (req, res) => {
 
 // Get the book list available in the shop
 public_users.get('/', function (req, res) {
-  return res.json(books);
+  // return res.json(books);
+
+  booksService
+    .getAll()
+    .then((data) => {
+      return res.json(data);
+    })
+    .catch((err) => {
+      return res.status(500).json(err);
+    });
 });
 
 // Get book details based on ISBN
