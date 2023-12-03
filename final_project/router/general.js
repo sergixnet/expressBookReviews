@@ -38,12 +38,22 @@ public_users.get('/', function (req, res) {
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn', function (req, res) {
   const isbn = req.params.isbn;
-  const isbns = Object.keys(books);
-  if (isbns.includes(isbn)) {
-    return res.json(books[isbn]);
-  } else {
-    return res.status(404).json({ message: 'Book not found' });
-  }
+  // const isbns = Object.keys(books);
+  // if (isbns.includes(isbn)) {
+  //   return res.json(books[isbn]);
+  // } else {
+  //   return res.status(404).json({ message: 'Book not found' });
+  // }
+
+  booksService
+    .getByISBN(isbn)
+    .then((data) => {
+      return res.json(data);
+    })
+    .catch((err) => {
+      const response = { message: err.message };
+      return res.status(err?.status || 500).json(response);
+    });
 });
 
 // Get book details based on author
