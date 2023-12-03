@@ -88,18 +88,28 @@ public_users.get('/author/:author', function (req, res) {
 // Get all books based on title
 public_users.get('/title/:title', function (req, res) {
   const title = req.params.title;
-  const isbns = Object.keys(books);
-  let result = [];
-  for (let isbn of isbns) {
-    if (books[isbn].title === title) {
-      result.push(books[isbn]);
-    }
-  }
-  if (result.length > 0) {
-    return res.json(result);
-  } else {
-    return res.status(404).json({ message: 'Books with this title not found' });
-  }
+  // const isbns = Object.keys(books);
+  // let result = [];
+  // for (let isbn of isbns) {
+  //   if (books[isbn].title === title) {
+  //     result.push(books[isbn]);
+  //   }
+  // }
+  // if (result.length > 0) {
+  //   return res.json(result);
+  // } else {
+  //   return res.status(404).json({ message: 'Books with this title not found' });
+  // }
+
+  booksService
+    .getBookByTitle(title)
+    .then((data) => {
+      return res.json(data);
+    })
+    .catch((err) => {
+      const response = { message: err.message };
+      return res.status(err?.status || 500).json(response);
+    });
 });
 
 //  Get book review

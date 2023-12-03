@@ -5,7 +5,7 @@ const getByISBN = (isbn) => {
   if (books[isbn]) {
     return Promise.resolve(books[isbn]);
   } else {
-    return Promise.reject({ message: 'Book not found', status: 400 });
+    return Promise.reject({ message: 'Book not found', status: 404 });
   }
 };
 
@@ -27,8 +27,27 @@ const getBooksByAuthor = (author) => {
   }
 };
 
+const getBookByTitle = (title) => {
+  const isbns = Object.keys(books);
+  let result = [];
+  for (let isbn of isbns) {
+    if (books[isbn].title === title) {
+      result.push(books[isbn]);
+    }
+  }
+  if (result.length > 0) {
+    return Promise.resolve(result);
+  } else {
+    return Promise.reject({
+      message: 'Books with this title not found',
+      status: 404,
+    });
+  }
+};
+
 module.exports = {
   getAll,
   getByISBN,
   getBooksByAuthor,
+  getBookByTitle,
 };
