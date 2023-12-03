@@ -59,20 +59,30 @@ public_users.get('/isbn/:isbn', function (req, res) {
 // Get book details based on author
 public_users.get('/author/:author', function (req, res) {
   const author = req.params.author;
-  const isbns = Object.keys(books);
-  let result = [];
-  for (let isbn of isbns) {
-    if (books[isbn].author === author) {
-      result.push(books[isbn]);
-    }
-  }
-  if (result.length > 0) {
-    return res.json(result);
-  } else {
-    return res
-      .status(404)
-      .json({ message: 'Books with this author not found' });
-  }
+  // const isbns = Object.keys(books);
+  // let result = [];
+  // for (let isbn of isbns) {
+  //   if (books[isbn].author === author) {
+  //     result.push(books[isbn]);
+  //   }
+  // }
+  // if (result.length > 0) {
+  //   return res.json(result);
+  // } else {
+  //   return res
+  //     .status(404)
+  //     .json({ message: 'Books with this author not found' });
+  // }
+
+  booksService
+    .getBooksByAuthor(author)
+    .then((data) => {
+      return res.json(data);
+    })
+    .catch((err) => {
+      const response = { message: err.message };
+      return res.status(err?.status || 500).json(response);
+    });
 });
 
 // Get all books based on title
