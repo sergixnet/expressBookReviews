@@ -22,17 +22,15 @@ public_users.post('/register', (req, res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/', function (req, res) {
+public_users.get('/', async function (req, res) {
   // return res.json(books);
 
-  booksService
-    .getAll()
-    .then((data) => {
-      return res.json(data);
-    })
-    .catch((err) => {
-      return res.status(500).json(err);
-    });
+  try {
+    const data = await booksService.getAll();
+    return res.json(data);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
 });
 
 // Get book details based on ISBN
